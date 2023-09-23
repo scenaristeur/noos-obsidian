@@ -4,7 +4,7 @@
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "This is noos plugin for Obsidian. This plugin connects to Solid, Ipfs and Yjs.",
-	"author": "Obsidian",
+	"author": "Scenaristeur",
 	"authorUrl": "https://scenaristeur.github.io",
 	"fundingUrl": "https://scenaristeur.github.io/funding",
 	"isDesktopOnly": false

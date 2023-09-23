@@ -1,3 +1,7 @@
+# Noos obsidian plugin
+
+This is noos plugin for Obsidian. This plugin connects to Solid, Ipfs and Yjs.
+
 # Obsidian Sample Plugin
 
 This is a sample plugin for Obsidian (https://obsidian.md).
