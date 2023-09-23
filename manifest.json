@@ -1,11 +1,11 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "noos",
+	"name": "Noos",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
+	"description": "This is noos plugin for Obsidian. This plugin connects to Solid, Ipfs and Yjs.",
 	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"authorUrl": "https://scenaristeur.github.io",
+	"fundingUrl": "https://scenaristeur.github.io/funding",
 	"isDesktopOnly": false
 }
