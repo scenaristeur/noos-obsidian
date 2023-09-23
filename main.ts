@@ -3,30 +3,66 @@ import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Set
 // Remember to rename these classes and interfaces!
 
 interface NoosPluginSettings {
-	mySetting: string;
+	solidFolder: string;
+	webId: string;
 }
 
 const DEFAULT_SETTINGS: NoosPluginSettings = {
-	mySetting: 'default'
+	solidFolder: 'https://spoggy-test2.solidcommunity.net/public/obsidian/',
+	webId: 'https://spoggy-test2.solidcommunity.net/profile/card#me'
 }
 
 export default class NoosPlugin extends Plugin {
 	settings: NoosPluginSettings;
+	statusBarItemEl: HTMLSpanElement
 
 	async onload() {
 		await this.loadSettings();
+		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
+		this.statusBarItemEl = this.addStatusBarItem();
+		this.statusBarItemEl.setText('Status Bar Text');
+
+		this.readActiveFileAndUpdateLineCount()
 
 		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
+		const ribbonIconEl = this.addRibbonIcon('dice', 'Noos', (evt: MouseEvent) => {
 			// Called when the user clicks the icon.
 			new Notice('This is a notice!');
 		});
 		// Perform additional things with the ribbon
 		ribbonIconEl.addClass('my-plugin-ribbon-class');
 
-		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
-		const statusBarItemEl = this.addStatusBarItem();
-		statusBarItemEl.setText('Status Bar Text');
+		const cloudOff = this.addRibbonIcon('cloud-off', 'Noos Connect', (evt: MouseEvent) => {
+			// Called when the user clicks the icon.
+			new Notice('you arte connecting to Solid!');
+		});
+		// Perform additional things with the ribbon
+		cloudOff.addClass('my-plugin-ribbon-class');
+
+
+
+		const statusSolid = this.addStatusBarItem()
+		statusSolid.setText("not logged")
+		statusSolid.onClickEvent(() => {
+			statusSolid.setText("logged")
+		})
+
+
+		// https://www.youtube.com/watch?v=AgXa03ZxJ88 8:00
+		this.app.workspace.on('active-leaf-change', async () => {
+			this.readActiveFileAndUpdateLineCount()
+		})
+
+		this.app.workspace.on('editor-change', async editor => {
+			const content = editor.getDoc().getValue()
+			this.updateLineCount(content)
+
+		})
+
+
+
+
+
 
 		// This adds a simple command that can be triggered anywhere
 		this.addCommand({
@@ -89,6 +125,23 @@ export default class NoosPlugin extends Plugin {
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}
+
+	private updateLineCount(fileContent?: string) {
+		const count = fileContent ? fileContent.split(/\r\n|\r|\n/).length : 0
+		const linesWorld = count === 1 ? "line" : "lines"
+		this.statusBarItemEl.setText(`${count} ${linesWorld}`)
+	}
+
+	private async readActiveFileAndUpdateLineCount() {
+		const file = this.app.workspace.getActiveFile()
+		if (file) {
+			const content = await this.app.vault.read(file)
+			console.log(content)
+			this.updateLineCount(content)
+		} else {
+			this.updateLineCount(undefined)
+		}
+	}
 }
 
 class SampleModal extends Modal {
@@ -97,12 +150,12 @@ class SampleModal extends Modal {
 	}
 
 	onOpen() {
-		const {contentEl} = this;
+		const { contentEl } = this;
 		contentEl.setText('Woah!');
 	}
 
 	onClose() {
-		const {contentEl} = this;
+		const { contentEl } = this;
 		contentEl.empty();
 	}
 }
@@ -116,18 +169,29 @@ class SampleSettingTab extends PluginSettingTab {
 	}
 
 	display(): void {
-		const {containerEl} = this;
+		const { containerEl } = this;
 
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
+			.setName('Solid Folder')
+			.setDesc('Where to store on Solid')
 			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.mySetting)
+				.setPlaceholder('https://spoggy-test2.solidcommunity.net/public/obsidian/')
+				.setValue(this.plugin.settings.solidFolder)
 				.onChange(async (value) => {
-					this.plugin.settings.mySetting = value;
+					this.plugin.settings.solidFolder = value;
+					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
+			.setName('Solid WebId')
+			.setDesc('What is your WebId')
+			.addText(text => text
+				.setPlaceholder('https://spoggy-test2.solidcommunity.net/profile/card#me')
+				.setValue(this.plugin.settings.webId)
+				.onChange(async (value) => {
+					this.plugin.settings.webId = value;
 					await this.plugin.saveSettings();
 				}));
 	}
