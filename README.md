@@ -2,6 +2,14 @@
 
 This is noos plugin for Obsidian. This plugin connects to Solid, Ipfs and Yjs.
 
+
+
+# Solid Login
+- https://docs.inrupt.com/developer-tools/javascript/client-libraries/reference/solid-client-authn/
+- auth https://docs.inrupt.com/developer-tools/javascript/client-libraries/authentication/
+
+
+
 # Obsidian Sample Plugin
 
 This is a sample plugin for Obsidian (https://obsidian.md).
